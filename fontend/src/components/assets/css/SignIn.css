@@ -1,0 +1,40 @@
+/* CSS for the sign-up form */
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 2px solid #000000bd;
+  border-radius: 5px;
+  background-color: #ece7e7;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-control {
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Add any additional CSS styles or customizations here */

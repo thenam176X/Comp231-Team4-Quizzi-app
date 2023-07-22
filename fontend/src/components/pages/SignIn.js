@@ -17,12 +17,15 @@ const SignInPage = () => {
       })
       .then((response) => {
         setData(response.data);
+
+        if (response.data.email) {
+          localStorage.setItem("user", data);
+        }
         console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-    localStorage.setItem("user", data);
   }
 
   if (localStorage.getItem("user")) {

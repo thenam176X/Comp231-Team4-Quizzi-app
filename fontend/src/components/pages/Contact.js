@@ -1,38 +1,50 @@
 import React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+
+
+import "../assets/css/Contact.css"
 
 const ContactPage = () => {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h2>Contact Information</h2>
-          <Form>
-            <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter your name" />
-            </Form.Group>
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" placeholder="Enter your email" />
-            </Form.Group>
-            <Form.Group controlId="formMessage">
-              <Form.Label>Message</Form.Label>
-              <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Col>
-        <Col>
-          <h2>Company Information</h2>
-          <p>Address: 123 Main Street, Anytown USA</p>
-          <p>Phone: (123) 456-7890</p>
-          <p>Email: info@company.com</p>
-        </Col>
-      </Row>
-    </Container>
+    <div class="contactPage-container">
+      <div class="form-container">
+      <h3>Send Message Us</h3>
+      <form>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
+          <input type="name" className="form-control" id="name" required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
+          <input type="email" className="form-control" id="email" required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="message" className="form-label">
+            Message
+          </label>
+          <textarea type="message" className="form-control" id="message" required></textarea>
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
+        
+      </form>
+      </div>
+      <div class="contact-container">
+        <h3>Get in Touch</h3>
+        <p>Queries, Concern? We are here to listen! We strive to offer
+          the best possible service to every contact. Our support team make sure that you get 
+          the best advice and guidance regarding whatever queries you have.
+        </p>
+        <p>Address: 941 Progress Avenue</p>
+        <p>Phone: 888-888-888</p>
+        <p>Email: quizzi@gmail.com</p>
+      </div>
+    </div>
+   
   );
 };
 

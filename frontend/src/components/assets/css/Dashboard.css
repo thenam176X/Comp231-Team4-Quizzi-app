@@ -1,0 +1,110 @@
+/* Dashboard.css */
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  color: #fff;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.dashboard-heading {
+  font-size: 40px;
+  color: black;
+}
+
+.create-test-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-test-button:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.section-heading {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+
+.quizes {
+    display: flex;
+    align-items: center;
+    color: black;
+    border: 1px solid;
+    padding: 10px;
+    width: 70%;
+    margin: 10px 10px;
+}
+h3.available{
+  color: black;
+}
+.category-tests,
+.overall-feedback {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.category-tests,
+.overall-feedback{
+ color: black;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.category-tests:hover,
+.overall-feedback:hover
+ {
+  border-color: #0056b3;
+}
+
+.quiz-titles,
+.update-quiz {
+  width: 100%;
+  margin-bottom: 20px;
+}
+button.section-update {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+li.choice {
+  list-style: none;
+  border: 1px solid;
+  padding: 10px;
+  margin: 10px 10em 10px -33px;
+  transition: background-color 0.3s ease;
+}
+
+li.choice:hover{
+  background-color: #007bff;
+  color: #fff;
+
+}

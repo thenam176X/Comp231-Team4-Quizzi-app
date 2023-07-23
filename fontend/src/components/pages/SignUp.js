@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/SignUp.css";
 import axios from "axios";
-import { Redirect } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const SignUpForm = () => {
+  const history = useHistory();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -28,7 +29,10 @@ const SignUpForm = () => {
     axios
       .post("http://localhost:8080/api/auth/signup", formData)
       .then((response) => {
-        if (response.data.status === 1) return <Redirect to='/sign-in' />;
+        if (response.data.status === 1) {
+          console.log(response.data);
+          history.push("/sign-in");
+        }
         console.log(response);
       })
       .catch(function (error) {

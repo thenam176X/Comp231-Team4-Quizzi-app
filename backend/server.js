@@ -4,6 +4,14 @@ const cookieSession = require("cookie-session");
 const db = require("./models");
 const DBUri = require("./config/db.config");
 
+// routes for question add and retrive questions
+const bodyParser = require('body-parser');
+const quizRoutes = require('./routes/quizRoutes');
+const quizDataRoutes = require('./routes/quizDataRoutes');
+
+// route for submit answers
+const quizSubmissionRoutes = require('./routes/quizSubmissionRoutes');
+
 const app = express();
 
 var corsOptions = {
@@ -90,3 +98,14 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+
+
+
+// Middleware
+app.use(bodyParser.json());
+
+// Routes
+app.use('/api', quizRoutes); // for add question and ans in database
+app.use('/api', quizDataRoutes); // for retrive quiz and ans from database
+app.use('/api',quizSubmissionRoutes); // for submitting and with question id and user id 

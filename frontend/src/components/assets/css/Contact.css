@@ -1,0 +1,21 @@
+.contactPage-container {
+  display: flex;
+  max-width: 980px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #000000bd;
+  border-radius: 5px;
+  background-color: #ece7e7;
+}
+.form-container {
+  flex: 1;
+  margin: 0 20px;
+}
+.contact-container {
+  flex: 1;
+}
+
+p{
+  color: black;
+}
+

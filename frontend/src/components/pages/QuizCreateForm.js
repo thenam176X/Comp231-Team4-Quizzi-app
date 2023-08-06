@@ -9,9 +9,10 @@ const QuizCreator = () => {
   const [title, setTitle] = useState('');
   const [quizType, setQuizType] = useState('multiple-choice');
   const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
   const [questions, setQuestions] = useState([]);
   const [quizId, setQuizId] = useState(null);
+  const [answers, setAnswers] = useState(['']);
+  const [correctAnswerIndex, setCorrectAnswerIndex] = useState(0);
   const history = useHistory();
   const textAreaRef = useRef();
 
@@ -21,6 +22,15 @@ const QuizCreator = () => {
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
   }, [question]);
+  const handleAddAnswer = () => {
+    setAnswers([...answers, '']);
+  };
+
+  const handleAnswerChange = (index, event) => {
+    const newAnswers = [...answers];
+    newAnswers[index] = event.target.value;
+    setAnswers(newAnswers);
+  };
 
   const handleAddQuestion = () => {
     // Check if the text fields are empty before adding the question
@@ -32,7 +42,7 @@ const QuizCreator = () => {
       alert('Please add your question.');
       return;
     }
-    if (answer === '') {
+    if (answers === '') {
       alert('Please add your answer.');
       return;
     }
@@ -40,12 +50,23 @@ const QuizCreator = () => {
 
     const newQuestion = {
       question: formattedQuestion,
-      answer: answer,
-      quizType: quizType, // Include quizType in each question
+      answers: answers, // include all answers
+      correctAnswerIndex: correctAnswerIndex,
+      quizType: quizType,
     };
+    if (quizType === 'multiple-choice') {
+      newQuestion.answers = answers; // include all answers
+      newQuestion.correctAnswerIndex = correctAnswerIndex;
+    } else if (quizType === 'true-false') {
+      newQuestion.answers = ['True', 'False'];
+      newQuestion.correctAnswerIndex = correctAnswerIndex ? 0 : 1; // 0 for True, 1 for False
+    }
+  
     setQuestions([...questions, newQuestion]);
     setQuestion('');
-    setAnswer('');
+    setAnswers(['']); // reset answers
+  
+    
   };
    
   const handleCreateQuiz = () => {
@@ -112,36 +133,78 @@ const QuizCreator = () => {
         />
         
       </div>
-      <div className="mb-3">
-        <label className="form-label">Answer:</label>
-        <input
-          type="text"
-          className="form-control"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-        />
-       
-      </div>
+      {quizType === 'multiple-choice' && (
+        <div className="mb-3">
+          <label className="form-label">Answers:</label>
+          {answers.map((answer, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                className="form-control"
+                value={answer}
+                onChange={(e) => handleAnswerChange(index, e)}
+              />
+            </div>
+          ))}
+          <button className="btn btn-secondary mt-2" onClick={handleAddAnswer}>
+            Add Answer
+          </button>
+        </div>
+      )}
+      {quizType === 'multiple-choice' && (
+        <div className="mb-3">
+          <label className="form-label">Correct Answer:</label>
+          <select
+            className="form-select"
+            value={correctAnswerIndex}
+            onChange={(e) => setCorrectAnswerIndex(Number(e.target.value))}
+          >
+            {answers.map((answer, index) => (
+              <option key={index} value={index}>
+                {index + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {quizType === 'true-false' && (
+  <div className="mb-3">
+    <label className="form-label">Correct Answer:</label>
+    <select
+      className="form-select"
+      value={correctAnswerIndex}
+      onChange={(e) => setCorrectAnswerIndex(Number(e.target.value))}
+    >
+      <option value={0}>True</option>
+      <option value={1}>False</option>
+    </select>
+  </div>
+)}
+
       <button className="btn btn-primary" onClick={handleAddQuestion}>
         Add Question
       </button>
       <button className="btn btn-success"  onClick={handleCreateQuiz}>
         Create Quiz
       </button>
-      
       <div>
-        
-        {questions.map((q, index) => (
-          <div key={index} className="mt-3">
-            <h4>Question {index + 1}</h4>
-            <QuestionText dangerouslySetInnerHTML={{ __html: q.question }} />
-            <h4>Answer {index + 1}</h4>
-            <p>{q.answer}</p>
-              
-
-          </div>
-        ))}
-      </div>
+      {questions.map((q, index) => (
+  <div key={index} className="mt-3">
+    <h4>Question {index + 1}</h4>
+    <QuestionText dangerouslySetInnerHTML={{ __html: q.question }} />
+    <h4>Answers:</h4>
+    {q.answers.map((answer, answerIndex) => (
+      <p key={answerIndex} style={{ color: 
+        q.quizType === 'multiple-choice' ? 
+        (answerIndex === q.correctAnswerIndex ? 'green' : 'black') : 
+        (q.quizType === 'true-false' && answerIndex === q.correctAnswerIndex ? 'black' : 'green') 
+      }}>
+        {answer}
+      </p>
+    ))}
+  </div>
+))}
+</div>
     </div>
      <Footer/>
      </>

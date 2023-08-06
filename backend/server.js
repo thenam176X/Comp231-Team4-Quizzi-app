@@ -32,10 +32,12 @@ const mongoose = require('mongoose');
 
 const quizSchema = new mongoose.Schema({
   title: String,
+  quizType: String,
   questions: [{
     question: String,
-    answer: String,
-    quizType: String, // Include quizType in each question
+    answers: [String],
+    correctAnswerIndex: Number,
+    quizType: String,
   }]
 });
 

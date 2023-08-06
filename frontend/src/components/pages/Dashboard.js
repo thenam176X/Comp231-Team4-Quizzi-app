@@ -1,69 +1,61 @@
-import React from 'react';
-import '../../App.css';
-import '../assets/css/Dashboard.css'
-import { useLocation } from 'react-router-dom';
-import Footer from '../assets/js/Footer';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useHistory, useParams } from 'react-router-dom';
 
-export default function Dashboard() {
-    const location = useLocation();
-    const { title, quizType, questions } = location.state || {}; 
+const TakeQuizPage = () => {
+  const [quiz, setQuiz] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+  const history = useHistory();
+  const { id } = useParams(); // assuming you're using react-router and the quiz ID is in the URL
 
-    // Store the quiz data using the title as the key
-  const quizDataByTitle = title ? { [title]: { quizType, questions } } : {};
+  useEffect(() => {
+   axios.get(`http://localhost:8080/api/user/quiz/latest`)
+      .then((response) => {
+        setQuiz(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching quiz:', error);
+      });
+  });
 
-  // Store all the quiz titles in an array
-  const quizTitles = title ? [title] : [];
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < quiz.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswerIndex(null); // reset selected answer for the next question
+    } else {
+      // If there are no more questions, go to the grading page
+      history.push(`/grading/`);
+    }
+  };
 
-    return (
-        <>
-          <div className="dashboard-container">
-          <h1 className="dashboard-heading">Analytics Dashboard</h1>
-      <div className="dashboard-header">
-       
-        <button className="create-test-button">Create Test</button>
-      </div>
+  if (!quiz) {
+    return <div>Loading...</div>;
+  }
 
-      <div className="dashboard-content">
-        <div className="category-tests">
-          <h3 className="section-heading">Category of Tests</h3>
-          <ul>
-            <li className='choice'>Multiple Choice</li>
-            <li className='choice'>True/false</li>
-            <li className='choice'>Fill in the blank</li>
-          </ul>
+  const question = quiz.questions[currentQuestionIndex];
+
+  return (
+    <div>
+      <h1>{quiz.title}</h1>
+      <h2>Question {currentQuestionIndex + 1}</h2>
+      <p>{question.question}</p>
+      {question.answers.map((answer, index) => (
+        <div key={index}>
+          <input
+            type="radio"
+            id={`answer-${index}`}
+            name="answer"
+            value={index}
+            checked={selectedAnswerIndex === index}
+            onChange={() => setSelectedAnswerIndex(index)}
+          />
+          <label htmlFor={`answer-${index}`}>{answer}</label>
         </div>
-
-        <div className="overall-feedback">
-          <h3 className="section-heading">Overall Feedback</h3>
-         <p>kcjndkjcnkwdjncewjnwejknfifubnbiewufiweufiewubnf</p>
-        </div>
-      </div>
-      <h3 className='available'>Available Quizes</h3>
-<div className='quizes'>
-  <div className="quiz-titles">
-        <h3 className="section-heading">Quiz 1</h3>
-        {/* Add quiz titles content here */}
-  </div>
-
-        <button className="section-update">Update</button>
-        {/* Add update quiz content here */}
-
-</div>
-<div className='quizes'>
- 
-  <div className="quiz-titles">
-        <h3 className="section-heading">Quiz 2</h3>
-        {/* Add quiz titles content here */}
-  </div>
-
-        <button className="section-update">Update</button>
-        {/* Add update quiz content here */}
-
-</div>
+      ))}
+      <button onClick={handleNextQuestion}>Next</button>
     </div>
-   <Footer/>
-        </>
+  );
+};
 
-    );
-
-}
+export default TakeQuizPage;

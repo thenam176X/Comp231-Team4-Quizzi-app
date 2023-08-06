@@ -29,11 +29,14 @@ const AnswerTitle = styled.h3`
   color: #666;
 `;
 
+const AnswerText = styled.p`
+  color: ${props => props.isCorrect ? 'green' : 'black'};
+`;
+
 const QuizPreviewPage = () => {
   const [quizzes, setQuizzes] = useState([]);
 
-  
-useEffect(() => {
+  useEffect(() => {
     axios.get('http://localhost:8080/api/user/quiz/latest')
       .then((response) => {
         setQuizzes([response.data]); // Wrap the single quiz in an array
@@ -42,28 +45,31 @@ useEffect(() => {
         console.error('Error fetching latest quiz:', error);
       });
   }, []);
+
   const QuestionText = styled.p`
-  white-space: pre-line;
-`;
+    white-space: pre-line;
+  `;
 
   return (
     <QuizContainer>
       <h1>Quiz Preview</h1>
       {quizzes.map((quiz, index) => (
-  <div key={index}>
-    <QuizTitle>{quiz.title}</QuizTitle>
-    {quiz.questions.map((question, qIndex) => (
-      <QuestionContainer key={qIndex}>
-        <QuestionTitle>Question {qIndex + 1}</QuestionTitle>
-        <QuestionText dangerouslySetInnerHTML={{ __html: question.question }} />
-        <AnswerTitle>Answer {qIndex + 1}</AnswerTitle>
-        <p>{question.answer}</p>
-      </QuestionContainer>
-    ))}
-   
-  </div>
-))}
-
+        <div key={index}>
+          <QuizTitle>{quiz.title}</QuizTitle>
+          {quiz.questions.map((question, qIndex) => (
+            <QuestionContainer key={qIndex}>
+              <QuestionTitle>Question {qIndex + 1}</QuestionTitle>
+              <QuestionText dangerouslySetInnerHTML={{ __html: question.question }} />
+              <AnswerTitle>Answers:</AnswerTitle>
+              {question.answers.map((answer, aIndex) => (
+                <AnswerText key={aIndex} isCorrect={aIndex === question.correctAnswerIndex}>
+                  {answer}
+                </AnswerText>
+              ))}
+            </QuestionContainer>
+          ))}
+        </div>
+      ))}
     </QuizContainer>
   );
 };

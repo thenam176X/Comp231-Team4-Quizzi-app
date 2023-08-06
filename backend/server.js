@@ -6,11 +6,31 @@ const DBUri = require("./config/db.config");
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:3000",
-};
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    exposedHeaders: "Authorization",
+    credentials: true,
+  })
+);
 
-app.use(cors(corsOptions));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -26,61 +46,6 @@ app.use(
   })
 );
 
-
-// -------------------------------------I ADD THIS CODE--------------------
-const mongoose = require('mongoose');
-
-const quizSchema = new mongoose.Schema({
-  title: String,
-  questions: [{
-    question: String,
-    answer: String,
-    quizType: String, // Include quizType in each question
-  }]
-});
-
-const Quiz = mongoose.model('Quiz', quizSchema);
-
-app.post('/api/user/quiz', (req, res) => {
-  const newQuiz = new Quiz({
-    title: req.body.title,
-    quizType: req.body.quizType,
-    questions: req.body.questions
-  });
-
-  newQuiz.save((err, savedQuiz) => {
-    if (err) {
-      res.status(500).send('Error creating quiz.');
-    } else {
-      res.status(200).json({ message: 'Quiz Created!', quizId: savedQuiz._id });
-    }
-  });
-});
-// Add this endpoint to get the quiz from databse to quiz preview page
-app.get('/api/user/quiz', (req, res) => {
-  Quiz.find({}, (err, quizzes) => {
-    if (err) {
-      res.status(500).send('Error fetching quizzes.');
-    } else {
-      res.status(200).json(quizzes);
-    }
-  });
-});
-
-// Add this endpoint to get the latest quiz
-app.get('/api/user/quiz/latest', (req, res) => {
-  Quiz.findOne().sort({ '_id': -1 }).exec((err, quiz) => {
-    if (err) {
-      res.status(500).send('Error fetching latest quiz.');
-    } else {
-      res.status(200).json(quiz);
-    }
-  });
-});
-
-
-
-// -------------------------------------I ADD THIS CODE--------------------
 const Role = db.role;
 db.mongoose
   .connect(DBUri.URI, {
@@ -89,7 +54,7 @@ db.mongoose
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
-    initial();
+    // initial();
   })
   .catch((err) => {
     console.error("Connection error", err);
@@ -137,7 +102,7 @@ require("./routes/user.routes")(app);
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to quizzi application." });
 });
 
 // set port, listen for requests

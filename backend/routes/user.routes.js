@@ -26,5 +26,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     userController.getAllQuizzes
   );
- 
+  app.post("/api/user/quiz", [authJwt.verifyToken], userController.addQuiz);
+  app.get(
+    "/api/user/quiz/latest",
+    [authJwt.verifyToken],
+    userController.getLatestQuiz
+  );
 };

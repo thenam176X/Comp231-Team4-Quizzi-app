@@ -24,7 +24,7 @@ exports.getAllQuizzes = async (req, res) => {
 // Add a new quiz
 exports.addQuiz = async (req, res) => {
   try {
-    const { quiz_title, questions } = req.body;
+    const { title, questions } = req.body;
     const userId = req.userId;
     console.log(userId);
     const user = await User.findById(userId);
@@ -34,7 +34,7 @@ exports.addQuiz = async (req, res) => {
 
     const newQuiz = new Quiz({
       user: userId, // Associate the quiz with the authenticated user
-      quiz_title,
+      title,
       questions,
     });
     await newQuiz.save();
@@ -65,5 +65,40 @@ exports.updateQuiz = async (req, res) => {
     res.json({ message: "Quiz updated successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error updating quiz" });
+  }
+};
+
+exports.getQuizById = async (req, res) => {
+  try {
+    const quizId = req.params.id; // Get the quizId from the URL parameter
+
+    const quiz = await Quiz.findById(quizId);
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    // Ensure that the user owns the quiz
+    if (quiz.user.toString() !== req.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    res.json(quiz);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving quiz" });
+  }
+};
+
+exports.getLatestQuiz = async (req, res) => {
+  try {
+    const latestQuiz = await Quiz.findOne({ user: req.userId })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (!latestQuiz) {
+      return res.status(404).json({ message: "No quizzes found" });
+    }
+
+    res.json(latestQuiz);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving the latest quiz" });
   }
 };

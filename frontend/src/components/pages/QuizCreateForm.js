@@ -99,6 +99,11 @@ const QuizCreator = () => {
   const QuestionText = styled.p`
   white-space: pre-line;
 `;
+const handleRemoveAnswer = () => {
+  const newAnswers = [...answers];
+  newAnswers.pop(); // remove the last answer
+  setAnswers(newAnswers);
+};
   return (
     <>
     <div className="container-menu">
@@ -136,23 +141,28 @@ const QuizCreator = () => {
         
       </div>
       {quizType === 'multiple-choice' && (
-        <div className="mb-3">
-          <label className="form-label">Answers:</label>
-          {answers.map((answer, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                className="form-control"
-                value={answer}
-                onChange={(e) => handleAnswerChange(index, e)}
-              />
-            </div>
-          ))}
-          <button className="btn btn-secondary mt-2" onClick={handleAddAnswer}>
-            Add Answer
-          </button>
-        </div>
-      )}
+  <div className="mb-3">
+    {answers.map((answer, index) => (
+      <div key={index}>
+        <label className="form-label" key={index}>Answers: {index + 1}</label>
+        <input
+          type="text"
+          className="form-control"
+          value={answer}
+          onChange={(e) => handleAnswerChange(index, e)}
+        />
+      </div>
+    ))}
+    <button className="btn btn-secondary mt-2" onClick={handleAddAnswer}>
+      Add Answer
+    </button>
+    {answers.length > 1 && (
+      <button className="btn btn-danger mt-2 ml-2" onClick={handleRemoveAnswer}>
+        Remove Answer
+      </button>
+    )}
+  </div>
+)}
       {quizType === 'multiple-choice' && (
         <div className="mb-3">
           <label className="form-label">Correct Answer:</label>

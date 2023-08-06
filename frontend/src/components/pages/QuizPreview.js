@@ -60,6 +60,7 @@ const QuizPreviewPage = () => {
             <QuestionContainer key={qIndex}>
               <QuestionTitle>Question {qIndex + 1}</QuestionTitle>
               <QuestionText dangerouslySetInnerHTML={{ __html: question.question }} />
+              <h4>Time Limit: {question.timeLimit} seconds</h4> {/* This line displays the time limit */}
               <AnswerTitle>Answers:</AnswerTitle>
               {question.answers.map((answer, aIndex) => (
                 <AnswerText key={aIndex} isCorrect={aIndex === question.correctAnswerIndex}>

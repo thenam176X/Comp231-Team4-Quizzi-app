@@ -32,12 +32,13 @@ const mongoose = require('mongoose');
 
 const quizSchema = new mongoose.Schema({
   title: String,
-  quizType: String,
+  
   questions: [{
     question: String,
     answers: [String],
     correctAnswerIndex: Number,
     quizType: String,
+    timeLimit: Number, // Add this line
   }]
 });
 
@@ -47,7 +48,10 @@ app.post('/api/user/quiz', (req, res) => {
   const newQuiz = new Quiz({
     title: req.body.title,
     quizType: req.body.quizType,
-    questions: req.body.questions
+    questions: req.body.questions.map(question => ({
+      ...question,
+      timeLimit: question.timeLimit, // Add this line
+    })),
   });
 
   newQuiz.save((err, savedQuiz) => {

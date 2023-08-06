@@ -13,6 +13,7 @@ const QuizCreator = () => {
   const [quizId, setQuizId] = useState(null);
   const [answers, setAnswers] = useState(['']);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(0);
+  const [timeLimit, setTimeLimit] = useState(30);
   const history = useHistory();
   const textAreaRef = useRef();
 
@@ -53,6 +54,7 @@ const QuizCreator = () => {
       answers: answers, // include all answers
       correctAnswerIndex: correctAnswerIndex,
       quizType: quizType,
+      timeLimit: timeLimit,
     };
     if (quizType === 'multiple-choice') {
       newQuestion.answers = answers; // include all answers
@@ -180,7 +182,19 @@ const QuizCreator = () => {
     </select>
   </div>
 )}
-
+<div className="mb-3">
+  <label className="form-label">Time Limit:</label>
+  <select
+    className="form-select"
+    value={timeLimit}
+    onChange={(e) => setTimeLimit(Number(e.target.value))}
+  >
+    <option value={30}>30s</option>
+    <option value={60}>60s</option>
+    <option value={90}>90s</option>
+    <option value={150}>150s</option>
+  </select>
+</div>
       <button className="btn btn-primary" onClick={handleAddQuestion}>
         Add Question
       </button>
@@ -188,23 +202,25 @@ const QuizCreator = () => {
         Create Quiz
       </button>
       <div>
-      {questions.map((q, index) => (
-  <div key={index} className="mt-3">
-    <h4>Question {index + 1}</h4>
-    <QuestionText dangerouslySetInnerHTML={{ __html: q.question }} />
-    <h4>Answers:</h4>
-    {q.answers.map((answer, answerIndex) => (
-      <p key={answerIndex} style={{ color: 
-        q.quizType === 'multiple-choice' ? 
-        (answerIndex === q.correctAnswerIndex ? 'green' : 'black') : 
-        (q.quizType === 'true-false' && answerIndex === q.correctAnswerIndex ? 'black' : 'green') 
-      }}>
-        {answer}
-      </p>
-    ))}
-  </div>
-))}
+  {questions.map((q, index) => (
+    <div key={index} className="mt-3">
+      <h4>Question {index + 1}</h4>
+      <QuestionText dangerouslySetInnerHTML={{ __html: q.question }} />
+      <h4>Time Limit: {q.timeLimit} seconds</h4> {/* This line displays the time limit */}
+      <h4>Answers:</h4>
+      {q.answers.map((answer, answerIndex) => (
+        <p key={answerIndex} style={{ color: 
+          q.quizType === 'multiple-choice' ? 
+          (answerIndex === q.correctAnswerIndex ? 'green' : 'black') : 
+          (q.quizType === 'true-false' && answerIndex === q.correctAnswerIndex ? 'black' : 'green') 
+        }}>
+          {answer}
+        </p>
+      ))}
+    </div>
+  ))}
 </div>
+
     </div>
      <Footer/>
      </>

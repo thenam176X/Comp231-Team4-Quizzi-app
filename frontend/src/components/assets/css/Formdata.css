@@ -1,61 +1,50 @@
-.container1 {
-  max-width: 50em;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.form-label {
-  font-weight: bold;
-}
-
-.form-control {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.textarea {
-  resize: vertical;
-}
-
-.buttons-container {
+.userAccount-container {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.btn {
-  padding: 8px 20px;
+  max-width: 980px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #000000bd;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: #ece7e7;
 }
 
-.btn-primary {
-  background-color: #007bff;
+.form-control:focus {
+  box-shadow: none;
+  border-color: #BA68C8
+}
+
+.profile-button {
+  background: rgb(99, 39, 120);
+  box-shadow: none;
+  border: none
+}
+
+.profile-button:hover {
+  background: #682773
+}
+
+.profile-button:focus {
+  background: #682773;
+  box-shadow: none
+}
+
+.profile-button:active {
+  background: #682773;
+  box-shadow: none
+}
+
+.back:hover {
+  color: #682773;
+  cursor: pointer
+}
+
+.labels {
+  font-size: 11px
+}
+
+.add-experience:hover {
+  background: #BA68C8;
   color: #fff;
-  margin-right: 10px;
-}
-
-.btn-secondary {
-  background-color: #ccc;
-  color: #000;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  background-color: #0056b3;
-}
-.mb-3 {
-  padding: 10px;
+  cursor: pointer;
+  border: solid 1px #BA68C8
 }

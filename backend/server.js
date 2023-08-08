@@ -32,7 +32,6 @@ const mongoose = require('mongoose');
 
 const quizSchema = new mongoose.Schema({
   title: String,
-  
   questions: [{
     question: String,
     answers: [String],
@@ -84,6 +83,30 @@ app.get('/api/user/quiz/latest', (req, res) => {
   });
 });
 
+// handle send answer from taking quiz page to backend
+const quizResultSchema = new mongoose.Schema({
+  completedQuestions: [Number],
+  incompleteQuestions: Number,
+  userAnswers: [{
+    question: String,
+    userAnswer: String,
+    correctAnswer: String,
+  }],
+});
+
+const QuizResult = mongoose.model('QuizResult', quizResultSchema);
+
+app.post('/api/user/quiz/submit', (req, res) => {
+  const newQuizResult = new QuizResult(req.body);
+
+  newQuizResult.save((err, savedQuizResult) => {
+    if (err) {
+      res.status(500).send('Error submitting quiz.');
+    } else {
+      res.status(200).json({ message: 'Quiz submitted!', quizResultId: savedQuizResult._id });
+    }
+  });
+});
 
 
 // -------------------------------------I ADD THIS CODE--------------------

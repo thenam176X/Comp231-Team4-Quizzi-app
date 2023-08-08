@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import "../assets/css/Formdata.css"
+import personal_img from "../assets/img/userProfile.png";
 
 const Formdata = ({ formData }) => {
   const [editedData, setEditedData] = useState({ ...formData });
@@ -12,139 +12,93 @@ const Formdata = ({ formData }) => {
       [name]: value,
     }));
   };
-
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let img = e.target.files[0];
+      setEditedData((prevState) => ({
+        ...prevState,
+        image: URL.createObjectURL(img),
+      }));
+    }
+  };
+  
   const handleSave = () => {
-    // Here, you can implement the logic to save the edited data.
-    // You can use an API call or any state management solution (e.g., Redux) to update the user's information.
-    console.log("Edited Data:", editedData);
+    fetch('/api/user/profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: 'USER_ID', // Replace with the actual user ID
+        profileData: editedData,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error('Error:', error));
   };
 
   return (
-    <div className="container1 mt-5">
-      <h2>User Info</h2>
-      <form>
-        <div className="name">
-        <div className="mb-3">
-          <label htmlFor="firstName" className="form-label">
-            First Name
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="firstName"
-            name="firstName"
-            value={editedData.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="lastName" className="form-label">
-            Last Name
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="lastName"
-            name="lastName"
-            value={editedData.lastName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        </div>
-        
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="email"
-            name="email"
-            value={editedData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="role" className="form-label">
-            User Role
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="role"
-            name="role"
-            value={editedData.role}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        {/* Add similar fields for lastName, email, role, password, and confirmPassword */}
-        {/* You can use the existing handleChange function for these fields */}
+    <div class="userAccount-container rounded bg-white mt-5 mb-5">
+      <div class="row">
+        <div class="col-md-3 border-right">
+        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+  <img class="rounded-circle mt-5" width="100px" src={editedData.image || personal_img} /><br></br>
+  <input type="file" class="inputControl" onChange={handleImageChange} />
+  <span>{editedData.name}{editedData.surname}</span>
+  <span>{editedData.email}</span>
+</div>
 
-        {/* Additional Fields */}
-        <div className="mb-3">
-          <label htmlFor="phoneNumber" className="form-label">
-            Phone Number
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={editedData.phoneNumber || ""}
-            onChange={handleChange}
-          />
         </div>
-        <div className="mb-3">
-          <label htmlFor="about" className="form-label">
-            About
-          </label>
-          <textarea
-            className="form-control"
-            id="about"
-            name="about"
-            value={editedData.about || ""}
-            onChange={handleChange}
-          />
+        <div class="col-md-5 border-right">
+          <div class="p-3 py-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="text-right">Profile Settings</h4>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label class="labels">Name</label>
+                <input type="text" class="form-control" placeholder="first name" value={editedData.name} name="name" onChange={handleChange}/>
+              </div>
+              <div class="col-md-6">
+                <label class="labels">Surname</label>
+                <input type="text" class="form-control" placeholder="surname" value={editedData.surname} name="surname" onChange={handleChange}/>
+              </div>
+              </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Mobile Number</label>
+                    <input type="text" class="form-control" placeholder="enter phone number" value={editedData.phonenumber} name="phoneNumber" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Address Line 1</label>
+                    <input type="text" class="form-control" placeholder="enter address line 1"value={editedData.address1} name="address1" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Address Line 2</label>
+                    <input type="text" class="form-control" placeholder="enter address line 2"value={editedData.address2} name="address2" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Postcode</label>
+                    <input type="text" class="form-control" placeholder="enter postcode" value={editedData.postcode} name="postcode" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Email </label>
+                    <input type="text" class="form-control" placeholder="enter email " value={editedData.email} name="email" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Education</label>
+                    <input type="text" class="form-control" placeholder="education" value={editedData.education} name="education" onChange={handleChange}/>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><label class="labels">Country</label>
+                    <input type="text" class="form-control" placeholder="country"  value={editedData.country} name="country" onChange={handleChange}/>
+                    </div>
+                    <div class="col-md-6"><label class="labels">State/Region</label>
+                    <input type="text" class="form-control" placeholder="State" value={editedData.state} name="state" onChange={handleChange}/>
+                    </div>
+                </div>
+                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button" onClick={handleSave}>Save Profile</button></div>
+            </div>
         </div>
-        <div className="mb-3">
-          <label htmlFor="country" className="form-label">
-            Country
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="country"
-            name="country"
-            value={editedData.country || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="language" className="form-label">
-            Language
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="language"
-            name="language"
-            value={editedData.language || ""}
-            onChange={handleChange}
-          />
-        </div>
-      </form>
-      <div className="buttons-container">
-        <button className="btn btn-primary" onClick={handleSave}>
-          Save
-        </button>
-        <Link to="/form-data" className="btn btn-secondary">
-          Cancel
-        </Link>
+
+        
+        
       </div>
     </div>
   );

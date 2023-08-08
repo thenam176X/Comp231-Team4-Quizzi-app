@@ -11,10 +11,11 @@ import Contact from './components/pages/Contact';
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import AvailableQuizPreviewPage from './components/pages/AvailableQuizPreviewPage ';
-import Dashboard from './components/pages/Dashboard';
 import FormDataPage from './components/pages/Formdata';
 import QuizPreviewPage from './components/pages/QuizPreview';
 import AvailableQuizPage from './components/pages/AvailableQuizPage';
+import GradeQuizPage from './components/pages/GradeQuiz';
+import TakeQuizPage from './components/pages/TakeQuizPage';
 function App() {
   return (
     <>
@@ -27,11 +28,12 @@ function App() {
           <Route path='/contact' component={Contact} />
           <Route path='/sign-in' component={SignIn} />
           <Route path='/sign-up' component={SignUp} />
-          <Route path='/dashboard' component={Dashboard} />
+          <Route path='/take-quiz' component={TakeQuizPage} />
           <Route path="/form-data" component={FormDataPage} />
           <Route path='/available-quiz-preview' component={AvailableQuizPreviewPage} />
           <Route path='/quiz-preview' component={QuizPreviewPage} />
           <Route path='/available-quiz' component={AvailableQuizPage} />
+          <Route path='/grade-quiz' component={GradeQuizPage} />
         </Switch>
       </Router>
     </>

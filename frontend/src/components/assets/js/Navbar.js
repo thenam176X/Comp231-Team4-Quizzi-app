@@ -70,14 +70,22 @@ function Navbar() {
                 </li>
                 <li className='nav-item'>
                   <Link
-                    to='/dashboard'
+                    to='/take-quiz'
                     className='nav-links'
                     onClick={closeMobileMenu}
                   >
-                    Dashboard
+                    Taking Quiz
                   </Link>
                 </li>
-
+                <li className='nav-item'>
+                  <Link
+                    to='/grade-quiz'
+                    className='nav-links'
+                    onClick={closeMobileMenu}
+                  >
+                    Grade Quiz
+                  </Link>
+                </li>
                 <li className='nav-item'>
                   <Link
                     to='/form-data'

@@ -47,10 +47,9 @@ const QuizCreator = () => {
       alert('Please add your answer.');
       return;
     }
-    const formattedQuestion = question.replace(/\n/g, '<br />');
-
+    
     const newQuestion = {
-      question: formattedQuestion,
+      question: question,
       answers: answers, // include all answers
       correctAnswerIndex: correctAnswerIndex,
       quizType: quizType,
@@ -68,9 +67,10 @@ const QuizCreator = () => {
     setQuestion('');
     setAnswers(['']); // reset answers
   
-    
-  };
+    // Reset the height of the textarea
    
+  };
+  
   const handleCreateQuiz = () => {
     const quizData = {
       title: title,

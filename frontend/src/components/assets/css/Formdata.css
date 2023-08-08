@@ -3,9 +3,16 @@
   max-width: 980px;
   margin: 20px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid #000000bd;
+  border-radius: 5px;
+  background-color: #ece7e7;
+}
+.input-control{
+  margin-left: 100px;
+}
+.form-control:focus {
+  box-shadow: none;
+  border-color: #BA68C8
 }
 
 .profile-button {
@@ -40,18 +47,6 @@
 .add-experience:hover {
   background: #BA68C8;
   color: #fff;
-  margin-right: 10px;
-}
-
-.btn-secondary {
-  background-color: #ccc;
-  color: #000;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  background-color: #0056b3;
-}
-.mb-3 {
-  padding: 10px;
+  cursor: pointer;
+  border: solid 1px #BA68C8
 }

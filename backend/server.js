@@ -8,6 +8,10 @@ const DBUri = require("./config/db.config");
 const bodyParser = require('body-parser');
 const quizRoutes = require('./routes/quizRoutes');
 const quizDataRoutes = require('./routes/quizDataRoutes');
+const quizHistoryRoutes = require('./quizHistoryRoutes');
+const quizDetailsRoutes = require('./quizDetailsRoutes'); 
+const quizAnalyticsRoutes = require('./quizAnalyticsRoutes');
+const answerRoutes = require('./answerRoutes');
 
 // route for submit answers
 const quizSubmissionRoutes = require('./routes/quizSubmissionRoutes');
@@ -109,3 +113,7 @@ app.use(bodyParser.json());
 app.use('/api', quizRoutes); // for add question and ans in database
 app.use('/api', quizDataRoutes); // for retrive quiz and ans from database
 app.use('/api',quizSubmissionRoutes); // for submitting and with question id and user id 
+app.use('/quiz-history', quizHistoryRoutes); // for retrive the quiz histoty 
+app.use('/quiz-details', quizDetailsRoutes); // get quiz details 
+app.use('/quiz-analytics', quizAnalyticsRoutes); // get quiz analytics
+app.use('/answers', answerRoutes); // save ans in database according to user type

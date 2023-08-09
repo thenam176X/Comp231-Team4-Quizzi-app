@@ -9,10 +9,11 @@ const TakeQuizPage = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [fillInTheBlankAnswer, setFillInTheBlankAnswer] = useState('');
+  const [fillInTheBlankAnswerArray, setFillInTheBlankAnswerArray] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const history = useHistory();
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
-  
+
 
   useEffect(() => {
     axios.get(`http://localhost:8080/api/user/quiz/latest`)
@@ -24,13 +25,6 @@ const TakeQuizPage = () => {
         console.error('Error fetching quiz:', error);
       });
   }, []);
-
-  useEffect(() => {
-    if (quiz) {
-      setTimeLeft(quiz.questions[currentQuestionIndex].timeLimit);
-      setIsAnswered(false); // Reset the answered state when moving to a new question
-    }
-  }, [currentQuestionIndex, quiz]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,6 +44,15 @@ const TakeQuizPage = () => {
     return () => clearInterval(timer);
   }, [timeLeft, isAnswered]);
 
+  useEffect(() => {
+    if (quiz && currentQuestionIndex < quiz.questions.length) {
+      setTimeLeft(quiz.questions[currentQuestionIndex].timeLimit);
+      setIsAnswered(false); // Reset the answered state when moving to a new question
+    } else if (quiz) {
+      handleSubmitQuiz();
+    }
+  }, [currentQuestionIndex, quiz]);
+
   const handleNextQuestion = () => {
     if (quiz.questions[currentQuestionIndex].quizType === 'fill-in-the-blank' && fillInTheBlankAnswer === '') {
       alert('Please fill in your answer before going to the next question.');
@@ -58,31 +61,25 @@ const TakeQuizPage = () => {
       alert('Please choose your answer before going to the next question.');
       return;
     }
-  
+
     setIsAnswered(true);
     setAnsweredQuestions([...answeredQuestions, currentQuestionIndex]);
-  
-    if (currentQuestionIndex < quiz.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswers([...selectedAnswers, selectedAnswerIndex]);
-      setSelectedAnswerIndex(null);
-      setFillInTheBlankAnswer(''); // Reset the fill-in-the-blank answer
-    } else {
-      handleSubmitQuiz();
-    }
-  };
-   
-  if (!quiz) {
-    return <div>Loading...</div>;
-  }
 
-  const question = quiz.questions[currentQuestionIndex];
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+
+    setSelectedAnswers([...selectedAnswers, selectedAnswerIndex]);
+    setFillInTheBlankAnswerArray([...fillInTheBlankAnswerArray, fillInTheBlankAnswer]);
+
+    setSelectedAnswerIndex(null);
+    setFillInTheBlankAnswer(''); // Reset the fill-in-the-blank answer
+  };
+
   const handleSubmitQuiz = () => {
     const completedQuestions = answeredQuestions.length;
     const incompleteQuestions = quiz.questions.length - completedQuestions;
-  
+
     alert(`You have completed ${completedQuestions} questions and ${incompleteQuestions} questions are marked as incomplete.`);
-  
+
     // Prepare the data to send to the server
     const quizData = {
       completedQuestions: answeredQuestions,
@@ -91,7 +88,7 @@ const TakeQuizPage = () => {
         if (question.quizType === 'fill-in-the-blank') {
           return {
             question: question.question,
-            userAnswer: fillInTheBlankAnswer,
+            userAnswer: fillInTheBlankAnswerArray[index],
             correctAnswerIndex: question.answers[question.correctAnswerIndex],
           };
         } else {
@@ -103,7 +100,7 @@ const TakeQuizPage = () => {
         }
       }),
     };
-  
+
     // Send the data to the server
     axios.post('http://localhost:8080/api/user/quiz/submit', quizData)
       .then((response) => {
@@ -114,11 +111,15 @@ const TakeQuizPage = () => {
         console.error('Error submitting quiz:', error);
       });
   };
-  
+
+  if (!quiz) {
+    return <div>Loading...</div>;
+  }
+  const question = currentQuestionIndex < quiz.questions.length ? quiz.questions[currentQuestionIndex] : quiz.questions[currentQuestionIndex - 1];
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>{quiz.title}</h1>
-      <h2 style={styles.questionNumber}>Question {currentQuestionIndex + 1}</h2>
+      <h2 style={styles.questionNumber}>Question {currentQuestionIndex < quiz.questions.length ? currentQuestionIndex + 1 : currentQuestionIndex}</h2>
       <p style={styles.question}>{question.question}</p>
       <p style={styles.timeLeft}>Time left: {timeLeft} seconds</p>
       {question.quizType === 'fill-in-the-blank' ? (
@@ -144,11 +145,9 @@ const TakeQuizPage = () => {
         </div>
       ))
     )}
-      {currentQuestionIndex < quiz.questions.length - 1 ? (
-        <button style={styles.button} onClick={handleNextQuestion}>Next</button>
-      ) : (
-        <button style={styles.button} onClick={handleSubmitQuiz}>Submit</button>
-      )}
+      <button style={styles.button} onClick={handleNextQuestion}>
+        {currentQuestionIndex < quiz.questions.length - 1 ? 'Next' : 'Submit'}
+      </button>
     </div>
   );
 };

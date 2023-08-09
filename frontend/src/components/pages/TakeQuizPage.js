@@ -8,6 +8,8 @@ const TakeQuizPage = () => {
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [fillInTheBlankAnswer, setFillInTheBlankAnswer] = useState('');
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
   const history = useHistory();
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   
@@ -49,7 +51,10 @@ const TakeQuizPage = () => {
   }, [timeLeft, isAnswered]);
 
   const handleNextQuestion = () => {
-    if (selectedAnswerIndex === null) {
+    if (quiz.questions[currentQuestionIndex].quizType === 'fill-in-the-blank' && fillInTheBlankAnswer === '') {
+      alert('Please fill in your answer before going to the next question.');
+      return;
+    } else if (quiz.questions[currentQuestionIndex].quizType !== 'fill-in-the-blank' && selectedAnswerIndex === null) {
       alert('Please choose your answer before going to the next question.');
       return;
     }
@@ -59,11 +64,14 @@ const TakeQuizPage = () => {
   
     if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswers([...selectedAnswers, selectedAnswerIndex]);
       setSelectedAnswerIndex(null);
+      setFillInTheBlankAnswer(''); // Reset the fill-in-the-blank answer
     } else {
-      history.push(`/grade-quiz/`);
+      handleSubmitQuiz();
     }
   };
+   
   if (!quiz) {
     return <div>Loading...</div>;
   }
@@ -79,11 +87,21 @@ const TakeQuizPage = () => {
     const quizData = {
       completedQuestions: answeredQuestions,
       incompleteQuestions: quiz.questions.length - completedQuestions,
-      userAnswers: quiz.questions.map((question, index) => ({
-        question: question.question,
-        userAnswer: question.answers[selectedAnswerIndex],
-        correctAnswerIndex: question.answers[question.correctAnswerIndex],
-      })),
+      userAnswers: quiz.questions.map((question, index) => {
+        if (question.quizType === 'fill-in-the-blank') {
+          return {
+            question: question.question,
+            userAnswer: fillInTheBlankAnswer,
+            correctAnswerIndex: question.answers[question.correctAnswerIndex],
+          };
+        } else {
+          return {
+            question: question.question,
+            userAnswer: question.answers[selectedAnswers[index]],
+            correctAnswerIndex: question.answers[question.correctAnswerIndex],
+          };
+        }
+      }),
     };
   
     // Send the data to the server
@@ -103,7 +121,15 @@ const TakeQuizPage = () => {
       <h2 style={styles.questionNumber}>Question {currentQuestionIndex + 1}</h2>
       <p style={styles.question}>{question.question}</p>
       <p style={styles.timeLeft}>Time left: {timeLeft} seconds</p>
-      {question.answers.map((answer, index) => (
+      {question.quizType === 'fill-in-the-blank' ? (
+      <input
+        type="text"
+        value={fillInTheBlankAnswer}
+        onChange={(e) => setFillInTheBlankAnswer(e.target.value.toUpperCase())}
+        style={styles.textInput}
+      />
+    ) : (
+      question.answers.map((answer, index) => (
         <div key={index} style={styles.answerContainer}>
           <input
             type="radio"
@@ -116,8 +142,8 @@ const TakeQuizPage = () => {
           />
           <label htmlFor={`answer-${index}`} style={styles.answerLabel}>{answer}</label>
         </div>
-      ))}
-      
+      ))
+    )}
       {currentQuestionIndex < quiz.questions.length - 1 ? (
         <button style={styles.button} onClick={handleNextQuestion}>Next</button>
       ) : (

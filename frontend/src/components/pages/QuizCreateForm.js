@@ -14,6 +14,7 @@ const QuizCreator = () => {
   const [answers, setAnswers] = useState(['']);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(0);
   const [timeLimit, setTimeLimit] = useState(30);
+  const [fillBlankAnswer, setFillBlankAnswer] = useState('');
   const history = useHistory();
   const textAreaRef = useRef();
 
@@ -62,12 +63,17 @@ const QuizCreator = () => {
       newQuestion.answers = ['True', 'False'];
       newQuestion.correctAnswerIndex = correctAnswerIndex ? 0 : 1; // 0 for True, 1 for False
     }
+    if (quizType === 'fill-in-the-blank') {
+      newQuestion.answers = [fillBlankAnswer]; // include the fill-in-the-blank answer
+      newQuestion.correctAnswerIndex = 0; // the correct answer is always the first one
+    }
+    
   
     setQuestions([...questions, newQuestion]);
     setQuestion('');
     setAnswers(['']); // reset answers
   
-    // Reset the height of the textarea
+   
    
   };
   
@@ -153,6 +159,8 @@ const handleRemoveAnswer = () => {
         />
       </div>
     ))}
+   
+
     <button className="btn btn-secondary mt-2" onClick={handleAddAnswer}>
       Add Answer
     </button>
@@ -190,6 +198,17 @@ const handleRemoveAnswer = () => {
       <option value={0}>True</option>
       <option value={1}>False</option>
     </select>
+  </div>
+)}
+ {quizType === 'fill-in-the-blank' && (
+  <div className="mb-3">
+    <label className="form-label">Answer:</label>
+    <input
+      type="text"
+      className="form-control"
+      value={fillBlankAnswer}
+      onChange={(e) => setFillBlankAnswer(e.target.value.toUpperCase())}
+    />
   </div>
 )}
 <div className="mb-3">

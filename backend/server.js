@@ -89,8 +89,9 @@ const quizResultSchema = new mongoose.Schema({
   incompleteQuestions: Number,
   userAnswers: [{
     question: String,
+    trueAnswer: String,
     userAnswer: String,
-    correctAnswer: String,
+    correctAnswerIndex: String,
   }],
 });
 
@@ -104,6 +105,17 @@ app.post('/api/user/quiz/submit', (req, res) => {
       res.status(500).send('Error submitting quiz.');
     } else {
       res.status(200).json({ message: 'Quiz submitted!', quizResultId: savedQuizResult._id });
+    }
+  });
+});
+
+// Add this endpoint to get the latest quiz result
+app.get('/api/user/quiz/result/latest', (req, res) => {
+  QuizResult.findOne().sort({ '_id': -1 }).exec((err, quizResult) => {
+    if (err) {
+      res.status(500).send('Error fetching latest quiz result.');
+    } else {
+      res.status(200).json(quizResult);
     }
   });
 });

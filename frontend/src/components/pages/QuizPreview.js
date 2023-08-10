@@ -29,10 +29,6 @@ const AnswerTitle = styled.h3`
   color: #666;
 `;
 
-const AnswerText = styled.p`
-  color: ${(props) => (props.isCorrect ? "green" : "black")};
-`;
-
 const QuizPreviewPage = () => {
   const [quizzes, setQuizzes] = useState([]);
 
@@ -63,17 +59,8 @@ const QuizPreviewPage = () => {
               <QuestionText
                 dangerouslySetInnerHTML={{ __html: question.question }}
               />
-              <h4>Time Limit: {question.timeLimit} seconds</h4>{" "}
-              {/* This line displays the time limit */}
-              <AnswerTitle>Answers:</AnswerTitle>
-              {question.answers.map((answer, aIndex) => (
-                <AnswerText
-                  key={aIndex}
-                  isCorrect={aIndex === question.correctAnswerIndex}
-                >
-                  {answer}
-                </AnswerText>
-              ))}
+              <AnswerTitle>Answer {qIndex + 1}</AnswerTitle>
+              <p>{question.answer}</p>
             </QuestionContainer>
           ))}
         </div>

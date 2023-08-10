@@ -6,11 +6,31 @@ const DBUri = require("./config/db.config");
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:3000",
-};
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    exposedHeaders: "Authorization",
+    credentials: true,
+  })
+);
 
-app.use(cors(corsOptions));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -23,103 +43,114 @@ app.use(
     name: "quizzi-session",
     keys: ["COOKIE_SECRET"], // should use as secret environment variable
     httpOnly: true,
+    sameSite: false,
+    secure: true,
   })
 );
 
-
 // -------------------------------------I ADD THIS CODE--------------------
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const quizSchema = new mongoose.Schema({
-  title: String,
-  questions: [{
-    question: String,
-    answers: [String],
-    correctAnswerIndex: Number,
-    quizType: String,
-    timeLimit: Number, // Add this line
-  }]
-});
+// const quizSchema = new mongoose.Schema({
+//   title: String,
+//   questions: [
+//     {
+//       question: String,
+//       answers: [String],
+//       correctAnswerIndex: Number,
+//       quizType: String,
+//       timeLimit: Number, // Add this line
+//     },
+//   ],
+// });
 
-const Quiz = mongoose.model('Quiz', quizSchema);
+//const Quiz = mongoose.model("Quiz", quizSchema);
 
-app.post('/api/user/quiz', (req, res) => {
-  const newQuiz = new Quiz({
-    title: req.body.title,
-    quizType: req.body.quizType,
-    questions: req.body.questions.map(question => ({
-      ...question,
-      timeLimit: question.timeLimit, // Add this line
-    })),
-  });
+// app.post("/api/user/quiz", (req, res) => {
+//   const newQuiz = new Quiz({
+//     title: req.body.title,
+//     quizType: req.body.quizType,
+//     questions: req.body.questions.map((question) => ({
+//       ...question,
+//       timeLimit: question.timeLimit, // Add this line
+//     })),
+//   });
 
-  newQuiz.save((err, savedQuiz) => {
-    if (err) {
-      res.status(500).send('Error creating quiz.');
-    } else {
-      res.status(200).json({ message: 'Quiz Created!', quizId: savedQuiz._id });
-    }
-  });
-});
+//   newQuiz.save((err, savedQuiz) => {
+//     if (err) {
+//       res.status(500).send("Error creating quiz.");
+//     } else {
+//       res.status(200).json({ message: "Quiz Created!", quizId: savedQuiz._id });
+//     }
+//   });
+// });
 // Add this endpoint to get the quiz from databse to quiz preview page
-app.get('/api/user/quiz', (req, res) => {
-  Quiz.find({}, (err, quizzes) => {
-    if (err) {
-      res.status(500).send('Error fetching quizzes.');
-    } else {
-      res.status(200).json(quizzes);
-    }
-  });
-});
+// app.get("/api/user/quiz", (req, res) => {
+//   Quiz.find({}, (err, quizzes) => {
+//     if (err) {
+//       res.status(500).send("Error fetching quizzes.");
+//     } else {
+//       res.status(200).json(quizzes);
+//     }
+//   });
+// });
 
 // Add this endpoint to get the latest quiz
-app.get('/api/user/quiz/latest', (req, res) => {
-  Quiz.findOne().sort({ '_id': -1 }).exec((err, quiz) => {
-    if (err) {
-      res.status(500).send('Error fetching latest quiz.');
-    } else {
-      res.status(200).json(quiz);
-    }
-  });
-});
+// app.get("/api/user/quiz/latest", (req, res) => {
+//   Quiz.findOne()
+//     .sort({ _id: -1 })
+//     .exec((err, quiz) => {
+//       if (err) {
+//         res.status(500).send("Error fetching latest quiz.");
+//       } else {
+//         res.status(200).json(quiz);
+//       }
+//     });
+// });
 
-// handle send answer from taking quiz page to backend
-const quizResultSchema = new mongoose.Schema({
-  completedQuestions: [Number],
-  incompleteQuestions: Number,
-  userAnswers: [{
-    question: String,
-    trueAnswer: String,
-    userAnswer: String,
-    correctAnswerIndex: String,
-  }],
-});
+//handle send answer from taking quiz page to backend
+// const quizResultSchema = new mongoose.Schema({
+//   completedQuestions: [Number],
+//   incompleteQuestions: Number,
+//   userAnswers: [
+//     {
+//       question: String,
+//       trueAnswer: String,
+//       userAnswer: String,
+//       correctAnswerIndex: String,
+//     },
+//   ],
+// });
 
-const QuizResult = mongoose.model('QuizResult', quizResultSchema);
+// const QuizResult = mongoose.model("QuizResult", quizResultSchema);
 
-app.post('/api/user/quiz/submit', (req, res) => {
-  const newQuizResult = new QuizResult(req.body);
+// app.post("/api/user/quiz/submit", (req, res) => {
+//   const newQuizResult = new QuizResult(req.body);
 
-  newQuizResult.save((err, savedQuizResult) => {
-    if (err) {
-      res.status(500).send('Error submitting quiz.');
-    } else {
-      res.status(200).json({ message: 'Quiz submitted!', quizResultId: savedQuizResult._id });
-    }
-  });
-});
+//   newQuizResult.save((err, savedQuizResult) => {
+//     if (err) {
+//       res.status(500).send("Error submitting quiz.");
+//     } else {
+//       res.status(200).json({
+//         message: "Quiz submitted!",
+//         quizResultId: savedQuizResult._id,
+//       });
+//     }
+//   });
+// });
 
-// Add this endpoint to get the latest quiz result
-app.get('/api/user/quiz/result/latest', (req, res) => {
-  QuizResult.findOne().sort({ '_id': -1 }).exec((err, quizResult) => {
-    if (err) {
-      res.status(500).send('Error fetching latest quiz result.');
-    } else {
-      res.status(200).json(quizResult);
-    }
-  });
-});
-
+// // Add this endpoint to get the latest quiz result
+// app.get("/api/user/quiz/result/latest", (req, res) => {
+//   QuizResult.findOne()
+//     .sort({ _id: -1 })
+//     .exec((err, quizResult) => {
+//       if (err) {
+//         res.status(500).send("Error fetching latest quiz result.");
+//       } else {
+//         res.status(200).json(quizResult);
+//       }
+//     });
+// });
 
 // -------------------------------------I ADD THIS CODE--------------------
 const Role = db.role;
@@ -130,55 +161,55 @@ db.mongoose
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
-    initial();
+    // initial();
   })
   .catch((err) => {
     console.error("Connection error", err);
     process.exit();
   });
 
-function initial() {
-  Role.estimatedDocumentCount((err, count) => {
-    if (!err && count === 0) {
-      new Role({
-        name: "user",
-      }).save((err) => {
-        if (err) {
-          console.log("error", err);
-        }
+// function initial() {
+//   Role.estimatedDocumentCount((err, count) => {
+//     if (!err && count === 0) {
+//       new Role({
+//         name: "user",
+//       }).save((err) => {
+//         if (err) {
+//           console.log("error", err);
+//         }
 
-        console.log("added 'user' to roles collection");
-      });
+//         console.log("added 'user' to roles collection");
+//       });
 
-      new Role({
-        name: "creator",
-      }).save((err) => {
-        if (err) {
-          console.log("error", err);
-        }
+//       new Role({
+//         name: "creator",
+//       }).save((err) => {
+//         if (err) {
+//           console.log("error", err);
+//         }
 
-        console.log("added 'creator' to roles collection");
-      });
+//         console.log("added 'creator' to roles collection");
+//       });
 
-      new Role({
-        name: "admin",
-      }).save((err) => {
-        if (err) {
-          console.log("error", err);
-        }
+//       new Role({
+//         name: "admin",
+//       }).save((err) => {
+//         if (err) {
+//           console.log("error", err);
+//         }
 
-        console.log("added 'admin' to roles collection");
-      });
-    }
-  });
-}
+//         console.log("added 'admin' to roles collection");
+//       });
+//     }
+//   });
+// }
 
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to quizzi application." });
 });
 
 // set port, listen for requests

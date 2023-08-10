@@ -105,6 +105,7 @@ exports.signin = (req, res) => {
       }
 
       req.session.token = token;
+      console.log(req.session.token);
 
       res.status(200).send({
         id: user._id,

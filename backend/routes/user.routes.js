@@ -21,10 +21,7 @@ module.exports = function (app) {
 
   app.post("/api/auth/signout", authController.signout);
 
-  app.get(
-    "/api/user/quiz",
-    [authJwt.verifyToken],
-    userController.getAllQuizzes
-  );
- 
+  app.post("/api/user/getAllQuiz", userController.getAllQuizzes);
+  app.post("/api/user/quiz", userController.addQuiz);
+  app.get("/api/user/quiz/latest", userController.getLatestQuiz);
 };

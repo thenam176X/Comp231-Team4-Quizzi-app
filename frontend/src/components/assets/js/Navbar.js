@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import axios from "axios";
 import { Link } from "react-router-dom";
 import "../css/Navbar.css";
 
@@ -9,6 +9,20 @@ function Navbar() {
 
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("userId");
+    setUser(null);
+    axios
+      .post("http://localhost:8080/api/auth/signout")
+      .then((response) => {
+        console.log("User Logged Out", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <>
@@ -56,7 +70,6 @@ function Navbar() {
                   >
                     Quiz Preview
                   </Link>
-                  
                 </li>
                 <li className='nav-item'>
                   <Link
@@ -66,7 +79,6 @@ function Navbar() {
                   >
                     Available Quiz
                   </Link>
-                  
                 </li>
                 <li className='nav-item'>
                   <Link
@@ -142,8 +154,7 @@ function Navbar() {
                   className='nav-links'
                   onClick={() => {
                     closeMobileMenu();
-                    localStorage.removeItem("user");
-                    setUser(null);
+                    handleSignOut();
                   }}
                 >
                   Log Out

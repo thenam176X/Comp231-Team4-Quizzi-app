@@ -34,7 +34,8 @@ const SignInPage = () => {
         setData(response.data);
 
         if (response.data.email) {
-          localStorage.setItem("user", data);
+          localStorage.setItem("user", response.data);
+          localStorage.setItem("userId", response.data.id);
         }
         console.log(response.data);
       })

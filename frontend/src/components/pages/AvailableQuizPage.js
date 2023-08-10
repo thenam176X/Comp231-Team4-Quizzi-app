@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 const QuizContainer = styled.div`
   margin: 2em;
@@ -15,7 +15,7 @@ const QuizTitle = styled.h2`
   font-size: 1.5em;
   cursor: pointer;
   &:hover {
-    color: #007BFF;
+    color: #007bff;
   }
 `;
 
@@ -24,12 +24,15 @@ const AvailableQuizPage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/user/quiz')
+    axios
+      .post("http://localhost:8080/api/user/getAllQuiz", {
+        userId: localStorage.getItem("userId"),
+      })
       .then((response) => {
         setQuizzes(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching quizzes:', error);
+        console.error("Error fetching quizzes:", error);
       });
   }, []);
 

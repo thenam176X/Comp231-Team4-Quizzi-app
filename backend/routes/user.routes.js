@@ -23,5 +23,7 @@ module.exports = function (app) {
 
   app.post("/api/user/getAllQuiz", userController.getAllQuizzes);
   app.post("/api/user/quiz", userController.addQuiz);
+  app.post("/api/user/quizById", userController.getQuizById);
   app.get("/api/user/quiz/latest", userController.getLatestQuiz);
+  app.post("/api/user/quiz/submit", userController.submitQuiz);
 };

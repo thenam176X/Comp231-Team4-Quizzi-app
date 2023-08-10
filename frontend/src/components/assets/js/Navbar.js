@@ -55,24 +55,6 @@ function Navbar() {
 
                 <li className='nav-item'>
                   <Link
-                    to='/available-quiz-preview'
-                    className='nav-links'
-                    onClick={closeMobileMenu}
-                  >
-                    Available Quiz Preview
-                  </Link>
-                </li>
-                <li className='nav-item'>
-                  <Link
-                    to='/quiz-preview'
-                    className='nav-links'
-                    onClick={closeMobileMenu}
-                  >
-                    Quiz Preview
-                  </Link>
-                </li>
-                <li className='nav-item'>
-                  <Link
                     to='/available-quiz'
                     className='nav-links'
                     onClick={closeMobileMenu}
@@ -80,15 +62,7 @@ function Navbar() {
                     Available Quiz
                   </Link>
                 </li>
-                <li className='nav-item'>
-                  <Link
-                    to='/take-quiz'
-                    className='nav-links'
-                    onClick={closeMobileMenu}
-                  >
-                    Taking Quiz
-                  </Link>
-                </li>
+
                 <li className='nav-item'>
                   <Link
                     to='/grade-quiz'

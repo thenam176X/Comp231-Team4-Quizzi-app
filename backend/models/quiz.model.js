@@ -32,6 +32,12 @@ const quizSchema = new mongoose.Schema({
     type: [questionSchema],
     required: true,
   },
+  submittedAnswers: {
+    type: [Number], // Array of user's answers
+  },
+  score: {
+    type: Number, // Quiz score
+  },
 });
 
 const Quiz = mongoose.model("Quiz", quizSchema);

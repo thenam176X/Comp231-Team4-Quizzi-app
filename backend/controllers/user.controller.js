@@ -69,16 +69,11 @@ exports.updateQuiz = async (req, res) => {
 
 exports.getQuizById = async (req, res) => {
   try {
-    const quizId = req.params.id; // Get the quizId from the URL parameter
+    const quizId = req.body.id; // Get the quizId from the URL parameter
 
     const quiz = await Quiz.findById(quizId);
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
-    }
-
-    // Ensure that the user owns the quiz
-    if (quiz.user.toString() !== req.userId) {
-      return res.status(401).json({ message: "Unauthorized" });
     }
 
     res.json(quiz);
@@ -99,5 +94,52 @@ exports.getLatestQuiz = async (req, res) => {
     res.json(latestQuiz);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving the latest quiz" });
+  }
+};
+
+function calculateQuizScore(userAnswers) {
+  let correctCount = 0;
+  userAnswers.map((question) => {
+    if (question.userAnswer === question.correctAnswerIndex) correctCount++;
+  });
+
+  return correctCount;
+}
+
+exports.submitQuiz = async (req, res) => {
+  try {
+    const {
+      userId,
+      quizId,
+      userAnswers,
+      completedQuestions,
+      incompleteQuestions,
+    } = req.body;
+
+    const quiz = await Quiz.findOne({ _id: quizId, user: userId });
+
+    if (!quiz) {
+      return res
+        .status(404)
+        .json({ error: "Quiz not found or not associated with the user." });
+    }
+    const quizScore = calculateQuizScore(userAnswers);
+    quiz.score = quizScore;
+    // Update quiz data and save
+    quiz.completedQuestions = completedQuestions;
+    quiz.incompleteQuestions = incompleteQuestions;
+    quiz.userAnswers = userAnswers; // Save answer indices instead of objects
+
+    const savedQuiz = await quiz.save();
+
+    res.status(200).json({
+      quiz: savedQuiz,
+      score: quizScore,
+    });
+  } catch (error) {
+    console.error("Error submitting quiz:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while submitting the quiz." });
   }
 };

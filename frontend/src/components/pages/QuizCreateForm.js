@@ -93,7 +93,7 @@ const QuizCreator = () => {
         console.log(quizId); // This might not reflect the updated state immediately
 
         // Navigate to QuizPreviewPage
-        history.push("/quiz-preview");
+        history.push("/available-quiz");
       })
       .catch((error) => {
         console.error("Error creating quiz:", error);

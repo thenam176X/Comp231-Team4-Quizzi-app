@@ -69,9 +69,9 @@ exports.updateQuiz = async (req, res) => {
 
 exports.getQuizById = async (req, res) => {
   try {
-    const quizId = req.body.id; // Get the quizId from the URL parameter
+    const { quizId, userId } = req.body;
 
-    const quiz = await Quiz.findById(quizId);
+    const quiz = await Quiz.findOne({ _id: quizId, user: userId });
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
     }
@@ -81,6 +81,7 @@ exports.getQuizById = async (req, res) => {
     res.status(500).json({ message: "Error retrieving quiz" });
   }
 };
+
 
 exports.getLatestQuiz = async (req, res) => {
   try {
@@ -96,24 +97,23 @@ exports.getLatestQuiz = async (req, res) => {
     res.status(500).json({ message: "Error retrieving the latest quiz" });
   }
 };
-
 function calculateQuizScore(userAnswers) {
   let correctCount = 0;
   userAnswers.map((question) => {
-    if (question.userAnswer === question.correctAnswerIndex) correctCount++;
+    if (question.userAnswer.toLowerCase() ===
+        question.correctAnswer.toLowerCase()) {
+      correctCount++;
+    }
   });
 
   return correctCount;
 }
-
 exports.submitQuiz = async (req, res) => {
   try {
     const {
       userId,
       quizId,
       userAnswers,
-      completedQuestions,
-      incompleteQuestions,
     } = req.body;
 
     const quiz = await Quiz.findOne({ _id: quizId, user: userId });
@@ -125,16 +125,20 @@ exports.submitQuiz = async (req, res) => {
     }
     const quizScore = calculateQuizScore(userAnswers);
     quiz.score = quizScore;
-    // Update quiz data and save
-    quiz.completedQuestions = completedQuestions;
-    quiz.incompleteQuestions = incompleteQuestions;
-    quiz.userAnswers = userAnswers; // Save answer indices instead of objects
+    quiz.userAnswers = userAnswers;
 
     const savedQuiz = await quiz.save();
 
     res.status(200).json({
-      quiz: savedQuiz,
-      score: quizScore,
+      quiz: {
+        ...savedQuiz._doc,
+        score: quizScore,
+        userAnswers: userAnswers.map(answer => ({
+          ...answer,
+          timeLimit: answer.timeLimit,
+          quizTitle: answer.quizTitle,
+        })),
+      },
     });
   } catch (error) {
     console.error("Error submitting quiz:", error);

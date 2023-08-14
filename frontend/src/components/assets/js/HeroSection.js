@@ -9,10 +9,10 @@ function HeroSection() {
       <h1>QUIZZI </h1>
       <p>What are you waiting for?</p>
       <div className='hero-btns'>
-        <button className='btns'> <Link to='/create-quiz' className='menulink' >
+         
+        <button className='btns' onClick={console.log('hey')}><Link to='/create-quiz' className='menulink' >
         GET STARTED
-              </Link></button>
-        <button className='btns' onClick={console.log('hey')}>Tutorial <i className='far fa-play-circle' /></button>
+              </Link> <i className='far fa-play-circle' /></button>
       </div>
     </div>
   );

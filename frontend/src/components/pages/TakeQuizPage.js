@@ -19,7 +19,8 @@ const TakeQuizPage = (props) => {
   useEffect(() => {
     axios
       .post(`http://localhost:8080/api/user/quizById`, {
-        id: props.match.params.id,
+        quizId: props.match.params.id,
+        userId: localStorage.getItem("userId"),
       })
       .then((response) => {
         setQuiz(response.data);
@@ -29,7 +30,7 @@ const TakeQuizPage = (props) => {
         console.error("Error fetching quiz:", error);
       });
   }, []);
-
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((timeLeft) => {
@@ -101,31 +102,41 @@ const TakeQuizPage = (props) => {
     const quizData = {
       userId: localStorage.getItem("userId"),
       quizId: props.match.params.id,
-      completedQuestions: answeredQuestions,
-      incompleteQuestions: quiz.questions.length - completedQuestions,
       userAnswers: quiz.questions.map((question, index) => {
+        const answerData = {
+          question: question.question,
+          correctAnswer: question.answers[question.correctAnswerIndex],
+        };
         if (question.quizType === "fill-in-the-blank") {
           return {
+            ...answerData,
             question: question.question,
+            answer:question.answers,
             userAnswer: fillInTheBlankAnswerArray[index],
-            correctAnswerIndex: question.answers[question.correctAnswerIndex],
+            correctAnswer: question.answers[question.correctAnswerIndex],
+            title: quiz.title,
+            timeLimit: question.timeLimit,
           };
         } else {
           return {
+            ...answerData,
             question: question.question,
+            answer:question.answers,
             userAnswer: question.answers[selectedAnswers[index]],
-            correctAnswerIndex: question.answers[question.correctAnswerIndex],
+            correctAnswer: question.answers[question.correctAnswerIndex],
+            title: quiz.title,
+            timeLimit: question.timeLimit,
           };
         }
-      }),
-    };
+      }),
+    };
 
     // Send the data to the server
     axios
       .post("http://localhost:8080/api/user/quiz/submit", quizData)
       .then((response) => {
         console.log("Quiz submitted successfully:", response.data);
-        history.push(`/grade-quiz/`);
+        history.push(`/grade-quiz/` ,{ takenQuizData: response.data.quiz });
       })
       .catch((error) => {
         console.error("Error submitting quiz:", error);

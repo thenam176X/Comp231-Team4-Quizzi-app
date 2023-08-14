@@ -61,7 +61,7 @@ const QuizCreator = () => {
       newQuestion.correctAnswerIndex = correctAnswerIndex;
     } else if (quizType === "true-false") {
       newQuestion.answers = ["True", "False"];
-      newQuestion.correctAnswerIndex = correctAnswerIndex ? 0 : 1; // 0 for True, 1 for False
+      newQuestion.correctAnswerIndex = correctAnswerIndex === 0 ? 0 : 1;// 0 for True, 1 for False
     }
     if (quizType === "fill-in-the-blank") {
       newQuestion.answers = [fillBlankAnswer]; // include the fill-in-the-blank answer
@@ -248,12 +248,12 @@ const QuizCreator = () => {
                     color:
                       q.quizType === "multiple-choice"
                         ? answerIndex === q.correctAnswerIndex
-                          ? "green"
-                          : "black"
+                        ? "green"
+                        : "black"
                         : q.quizType === "true-false" &&
                           answerIndex === q.correctAnswerIndex
-                        ? "black"
-                        : "green",
+                          ? "green"
+                          : "black" ,
                   }}
                 >
                   {answer}

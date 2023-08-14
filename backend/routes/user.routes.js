@@ -26,4 +26,10 @@ module.exports = function (app) {
   app.post("/api/user/quizById", userController.getQuizById);
   app.get("/api/user/quiz/latest", userController.getLatestQuiz);
   app.post("/api/user/quiz/submit", userController.submitQuiz);
+
+  app.get('/api/user/:id', userController.getUsers);
+  app.post('/api/user', userController.createUser);
+  app.put('/api/user/:id', userController.updateUser);
+  app.delete('/api/user/:id', userController.deleteUser);
+  app.post('/api/user/:id/profile', userController.saveProfile);
 };

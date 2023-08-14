@@ -10,7 +10,7 @@ import QuizCreator from "./components/pages/QuizCreateForm";
 import Contact from "./components/pages/Contact";
 import SignIn from "./components/pages/SignIn";
 import SignUp from "./components/pages/SignUp";
-import AvailableQuizPreviewPage from "./components/pages/AvailableQuizPreviewPage ";
+
 import FormDataPage from "./components/pages/Formdata";
 import QuizPreviewPage from "./components/pages/QuizPreview";
 import AvailableQuizPage from "./components/pages/AvailableQuizPage";
@@ -30,11 +30,8 @@ function App() {
           <Route path='/sign-up' component={SignUp} />
           <Route path='/quiz/:id' component={TakeQuizPage} />
           <Route path='/form-data' component={FormDataPage} />
-          <Route
-            path='/available-quiz-preview'
-            component={AvailableQuizPreviewPage}
-          />
-          <Route path='/quiz-preview' component={QuizPreviewPage} />
+          
+         
           <Route path='/available-quiz' component={AvailableQuizPage} />
           <Route path='/grade-quiz' component={GradeQuizPage} />
         </Switch>

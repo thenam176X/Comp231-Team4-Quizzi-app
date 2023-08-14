@@ -1,10 +1,27 @@
-import React, { useState } from "react";
-import "../assets/css/Formdata.css"
+import React, { useState,  useEffect } from "react";
+import "../assets/css/Formdata.css";
+import axios from "axios";
 import personal_img from "../assets/img/userProfile.png";
 
 const Formdata = ({ formData }) => {
   const [editedData, setEditedData] = useState({ ...formData });
-
+  useEffect(() => {
+    const request = "http://localhost:8080/api/user/" + localStorage.getItem("userId");
+    axios
+      .get(request)
+      .then((response) => {
+        const { firstname, lastname, email } = response.data;
+        setEditedData((prevState) => ({
+          ...prevState,
+          name: firstname,
+          surname: lastname,
+          email,
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching quizzes:", error);
+      });
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedData((prevState) => ({

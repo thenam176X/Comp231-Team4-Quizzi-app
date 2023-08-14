@@ -17,6 +17,26 @@ const questionSchema = new mongoose.Schema({
     type: Number,
   },
 });
+const userAnswersSchema = new mongoose.Schema({
+  question: {
+    type: String,
+  },
+  correctAnswer: {
+    type: String,
+  },
+  userAnswer: {
+    type: String,
+  },
+  answers: {
+    type: [String],
+  },
+  title: {
+    type: String,
+  },
+  timeLimit: {
+    type: Number,
+  },
+});
 
 const quizSchema = new mongoose.Schema({
   user: {
@@ -32,12 +52,12 @@ const quizSchema = new mongoose.Schema({
     type: [questionSchema],
     required: true,
   },
-  submittedAnswers: {
-    type: [Number], // Array of user's answers
+  userAnswers: {
+    type: [userAnswersSchema], // Array of user's answers
   },
   score: {
-    type: Number, // Quiz score
-  },
+    type: Number, // Quiz score
+  },
 });
 
 const Quiz = mongoose.model("Quiz", quizSchema);
